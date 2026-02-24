@@ -12,7 +12,7 @@ export const Header = () => {
 
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
         <a href="/">
-          <img src={logo} alt="Nacka Strand Customs" className="h-10 w-auto border-black/0 border-0 object-contain" style={{ filter: "brightness(0) invert(1)" }} />
+          <img src={logo} alt="Nacka Strand Customs" className="h-10 w-auto object-contain" />
         </a>
         <CartDrawer />
       </div>

@@ -101,7 +101,7 @@ export const ProductSection = () => {
             {/* Info */}
             <div className="flex flex-col justify-center space-y-6">
               <div>
-                <img src={logoImg} alt="Nacka Strand Customs" className="h-20 md:h-14 w-auto mb-3 border-black/0 border-0 object-contain" style={{ filter: "brightness(0) invert(1)" }} />
+                <img src={logoImg} alt="Nacka Strand Customs" className="h-20 md:h-14 w-auto mb-3 object-contain" />
                 <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-3 break-words">
                   {product.node.title}
                 </h2>
