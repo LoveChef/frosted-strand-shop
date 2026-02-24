@@ -10,7 +10,7 @@ const features = [
   {
     icon: Shield,
     title: "Skadefri montering",
-    description: "Ingen borrning eller limning krävs. Din bil förblir helt orörd.",
+    description: "Montera magneterna i dina befintliga hål. Din bil förblir helt orörd.",
   },
   {
     icon: Zap,
