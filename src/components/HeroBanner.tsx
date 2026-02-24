@@ -7,7 +7,7 @@ export const HeroBanner = () => {
   };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative h-screen w-full overflow-hidden" aria-label="Hjältebanner">
       <img
         src={heroBanner}
         alt="Magnetisk registreringsskyltshållare monterad på bil"
