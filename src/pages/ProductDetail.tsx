@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ShoppingCart, Loader2, ArrowLeft } from "lucide-react";
 import { fetchProductByHandle, type ShopifyProduct } from "@/lib/shopify";
+import logoImg from "@/assets/nscustoms-logo.png";
 import { useCartStore } from "@/stores/cartStore";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -110,7 +111,7 @@ const ProductDetail = () => {
 
               <div className="flex flex-col justify-center space-y-6">
                 <div>
-                  <p className="text-sm font-medium text-primary uppercase tracking-widest mb-2">Nacka Strand Customs</p>
+                  <img src={logoImg} alt="Nacka Strand Customs" className="h-8 w-auto invert mb-2" />
                   <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">
                     {product.node.title}
                   </h1>
