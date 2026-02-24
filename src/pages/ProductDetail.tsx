@@ -120,11 +120,16 @@ const ProductDetail = () => {
                   </p>
                 </div>
 
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-baseline gap-3">
                   <span className="text-4xl font-display font-bold gradient-text">
                     {parseFloat(price.amount).toFixed(0)}
                   </span>
                   <span className="text-lg text-muted-foreground">{price.currencyCode}</span>
+                  {variant?.compareAtPrice && parseFloat(variant.compareAtPrice.amount) > parseFloat(price.amount) && (
+                    <span className="text-lg text-muted-foreground line-through opacity-60">
+                      {parseFloat(variant.compareAtPrice.amount).toFixed(0)} {variant.compareAtPrice.currencyCode}
+                    </span>
+                  )}
                 </div>
 
                 <button
