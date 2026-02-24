@@ -7,6 +7,7 @@ import logoImg from "@/assets/nscustoms-logo.png";
 import { useCartStore } from "@/stores/cartStore";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SEOHead, buildProductSchema } from "@/components/SEOHead";
 import { toast } from "sonner";
 
 const ProductDetail = () => {
@@ -50,6 +51,17 @@ const ProductDetail = () => {
   const images = product.node.images.edges;
   const variant = product.node.variants.edges[0]?.node;
   const price = variant?.price || product.node.priceRange.minVariantPrice;
+  const productUrl = `/product/${handle}`;
+
+  const productSchema = buildProductSchema({
+    name: product.node.title,
+    description: product.node.description || "Premium magnetisk registreringsskyltshållare från Nacka Strand Customs.",
+    image: images[0]?.node.url || "",
+    price: price.amount,
+    currency: price.currencyCode,
+    url: `https://nackastrandcustoms.se${productUrl}`,
+    available: variant?.availableForSale ?? false,
+  });
 
   const handleAddToCart = async () => {
     if (!variant) return;
@@ -66,15 +78,25 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={product.node.title}
+        description={product.node.description || "Premium magnetisk registreringsskyltshållare – Enkel montering utan borrning."}
+        canonical={productUrl}
+        type="product"
+        image={images[0]?.node.url}
+        jsonLd={productSchema}
+      />
       <Header />
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
-          <a href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
-            <ArrowLeft className="w-4 h-4" />
-            Tillbaka
-          </a>
+          <nav aria-label="Brödsmulor" className="mb-8">
+            <a href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Tillbaka
+            </a>
+          </nav>
 
-          <motion.div
+          <motion.article
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -87,22 +109,24 @@ const ProductDetail = () => {
                   {images[selectedImage] && (
                     <img
                       src={images[selectedImage].node.url}
-                      alt={images[selectedImage].node.altText || product.node.title}
+                      alt={images[selectedImage].node.altText || `${product.node.title} – produktbild ${selectedImage + 1}`}
                       className="w-full h-full object-cover"
+                      loading={selectedImage === 0 ? "eager" : "lazy"}
                     />
                   )}
                 </div>
                 {images.length > 1 && (
-                  <div className="flex gap-3">
+                  <div className="flex gap-3" role="group" aria-label="Produktbilder">
                     {images.map((img, i) => (
                       <button
                         key={i}
                         onClick={() => setSelectedImage(i)}
+                        aria-label={`Visa bild ${i + 1}`}
                         className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
                           i === selectedImage ? "border-primary" : "border-transparent"
                         }`}
                       >
-                        <img src={img.node.url} alt="" className="w-full h-full object-cover" />
+                        <img src={img.node.url} alt="" className="w-full h-full object-cover" loading="lazy" />
                       </button>
                     ))}
                   </div>
@@ -149,7 +173,7 @@ const ProductDetail = () => {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </motion.article>
         </div>
       </main>
       <Footer />

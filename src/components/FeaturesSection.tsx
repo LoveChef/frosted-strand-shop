@@ -21,7 +21,7 @@ const features = [
 
 export const FeaturesSection = () => {
   return (
-    <section className="py-24">
+    <section className="py-24" aria-label="Produktfördelar">
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-3 gap-6">
           {features.map((feature, i) => (

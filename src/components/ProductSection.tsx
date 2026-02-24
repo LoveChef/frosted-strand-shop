@@ -59,7 +59,7 @@ export const ProductSection = () => {
   };
 
   return (
-    <section id="product" className="py-24">
+    <section id="product" className="py-24" aria-label="Produkter">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
