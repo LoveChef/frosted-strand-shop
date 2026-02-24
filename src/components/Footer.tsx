@@ -5,12 +5,12 @@ export const Footer = () => {
     <footer className="border-t border-border py-12">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <img src={logoImg} alt="Nacka Strand Customs" className="h-8 w-auto" style={{ filter: "brightness(0) invert(1)" }} />
+          <img src={logoImg} alt="Nacka Strand Customs" className="h-8 w-auto border-black/0" style={{ filter: "brightness(0) invert(1)" }} />
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Nacka Strand Customs. Alla rättigheter förbehållna.
           </p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>);
+
 };
