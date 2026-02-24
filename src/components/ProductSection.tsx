@@ -14,10 +14,10 @@ export const ProductSection = () => {
   const isCartLoading = useCartStore((s) => s.isLoading);
 
   useEffect(() => {
-    fetchProducts(10)
-      .then(setProducts)
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    fetchProducts(10).
+    then(setProducts).
+    catch(console.error).
+    finally(() => setLoading(false));
   }, []);
 
   if (loading) {
@@ -26,8 +26,8 @@ export const ProductSection = () => {
         <div className="container mx-auto px-6 flex justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
-      </section>
-    );
+      </section>);
+
   }
 
   if (products.length === 0) {
@@ -36,8 +36,8 @@ export const ProductSection = () => {
         <div className="container mx-auto px-6 text-center">
           <p className="text-muted-foreground text-lg">Inga produkter hittades.</p>
         </div>
-      </section>
-    );
+      </section>);
+
   }
 
   const product = products[0];
@@ -53,7 +53,7 @@ export const ProductSection = () => {
       variantTitle: variant.title,
       price: variant.price,
       quantity: 1,
-      selectedOptions: variant.selectedOptions || [],
+      selectedOptions: variant.selectedOptions || []
     });
     toast.success("Tillagd i varukorgen!", { position: "top-center" });
   };
@@ -67,41 +67,41 @@ export const ProductSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="glass rounded-2xl p-8 md:p-12"
-          style={{ boxShadow: "var(--shadow-card)" }}
-        >
+          style={{ boxShadow: "var(--shadow-card)" }}>
+
           <div className="grid md:grid-cols-2 gap-12">
             {/* Images */}
             <div className="space-y-4">
               <div className="aspect-square rounded-xl overflow-hidden bg-secondary/20">
-                {images[selectedImage] && (
-                  <img
-                    src={images[selectedImage].node.url}
-                    alt={images[selectedImage].node.altText || product.node.title}
-                    className="w-full h-full object-cover"
-                  />
-                )}
+                {images[selectedImage] &&
+                <img
+                  src={images[selectedImage].node.url}
+                  alt={images[selectedImage].node.altText || product.node.title}
+                  className="w-full h-full object-cover" />
+
+                }
               </div>
-              {images.length > 1 && (
-                <div className="flex gap-3">
-                  {images.map((img, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setSelectedImage(i)}
-                      className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
-                        i === selectedImage ? "border-primary" : "border-transparent"
-                      }`}
-                    >
+              {images.length > 1 &&
+              <div className="flex gap-3">
+                  {images.map((img, i) =>
+                <button
+                  key={i}
+                  onClick={() => setSelectedImage(i)}
+                  className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
+                  i === selectedImage ? "border-primary" : "border-transparent"}`
+                  }>
+
                       <img src={img.node.url} alt="" className="w-full h-full object-cover" />
                     </button>
-                  ))}
+                )}
                 </div>
-              )}
+              }
             </div>
 
             {/* Info */}
             <div className="flex flex-col justify-center space-y-6">
               <div>
-                <img src={logoImg} alt="Nacka Strand Customs" className="h-8 w-auto mb-2" style={{ filter: "brightness(0) invert(1)" }} />
+                <img src={logoImg} alt="Nacka Strand Customs" className="h-8 w-auto mb-2 border-black/0" style={{ filter: "brightness(0) invert(1)" }} />
                 <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">
                   {product.node.title}
                 </h2>
@@ -136,21 +136,21 @@ export const ProductSection = () => {
                 onClick={handleAddToCart}
                 disabled={isCartLoading || !variant?.availableForSale}
                 className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-display font-medium text-primary-foreground transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
-                style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}
-              >
-                {isCartLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
+                style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}>
+
+                {isCartLoading ?
+                <Loader2 className="w-5 h-5 animate-spin" /> :
+
+                <>
                     <ShoppingCart className="w-5 h-5" />
                     Lägg i Varukorg
                   </>
-                )}
+                }
               </button>
             </div>
           </div>
         </motion.div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
