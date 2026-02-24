@@ -66,7 +66,7 @@ export const ProductSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="glass rounded-2xl p-8 md:p-12"
+          className="glass rounded-2xl p-5 md:p-12"
           style={{ boxShadow: "var(--shadow-card)" }}>
 
           <div className="grid md:grid-cols-2 gap-12">
@@ -101,11 +101,11 @@ export const ProductSection = () => {
             {/* Info */}
             <div className="flex flex-col justify-center space-y-6">
               <div>
-                <img src={logoImg} alt="Nacka Strand Customs" className="h-20 w-auto mb-4 border-black/0" style={{ filter: "brightness(0) invert(1)" }} />
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">
+                <img src={logoImg} alt="Nacka Strand Customs" className="h-10 md:h-14 w-auto mb-3 border-black/0" style={{ filter: "brightness(0) invert(1)" }} />
+                <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-3 break-words">
                   {product.node.title}
                 </h2>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed break-words">
                   {product.node.description || "Premium magnetisk registreringsskyltshållare. Enkel montering, ingen borrning krävs."}
                 </p>
               </div>
