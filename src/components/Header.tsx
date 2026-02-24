@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { CartDrawer } from "./CartDrawer";
+import logo from "@/assets/nscustoms-logo.png";
 
 export const Header = () => {
   return (
@@ -10,8 +11,8 @@ export const Header = () => {
       className="fixed top-0 left-0 right-0 z-50 glass-strong"
     >
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="/" className="font-display text-lg font-semibold tracking-tight text-foreground">
-          NACKA STRAND CUSTOMS
+        <a href="/">
+          <img src={logo} alt="Nacka Strand Customs" className="h-10 w-auto invert" />
         </a>
         <CartDrawer />
       </div>
