@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ShoppingCart, Loader2 } from "lucide-react";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
 import logoImg from "@/assets/nscustoms-logo.png";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
+import { triggerFlyToCart } from "./FlyToCartAnimation";
 
 export const ProductSection = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
@@ -12,6 +13,7 @@ export const ProductSection = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const addItem = useCartStore((s) => s.addItem);
   const isCartLoading = useCartStore((s) => s.isLoading);
+  const addBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     fetchProducts(10).
@@ -45,8 +47,15 @@ export const ProductSection = () => {
   const variant = product.node.variants.edges[0]?.node;
   const price = variant?.price || product.node.priceRange.minVariantPrice;
 
-  const handleAddToCart = async () => {
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
     if (!variant) return;
+    // Trigger fly animation from button position
+    const imgUrl = images[0]?.node.url;
+    if (imgUrl && addBtnRef.current) {
+      const rect = addBtnRef.current.getBoundingClientRect();
+      triggerFlyToCart(imgUrl, rect.left + rect.width / 2, rect.top);
+    }
     await addItem({
       product,
       variantId: variant.id,
@@ -138,6 +147,7 @@ export const ProductSection = () => {
               </ul>
 
               <button
+                ref={addBtnRef}
                 onClick={handleAddToCart}
                 disabled={isCartLoading || !variant?.availableForSale}
                 className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-display font-medium text-primary-foreground transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"

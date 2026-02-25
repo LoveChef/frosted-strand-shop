@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { CartDrawer } from "./CartDrawer";
+import { useCartBounce } from "./FlyToCartAnimation";
 import logo from "@/assets/nscustoms-logo.png";
 
 export const Header = () => {
+  const bounce = useCartBounce();
+
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
@@ -14,8 +17,14 @@ export const Header = () => {
         <a href="/">
           <img src={logo} alt="Nacka Strand Customs" className="h-10 w-auto object-contain" />
         </a>
-        <CartDrawer />
+        <motion.div
+          data-cart-icon
+          animate={bounce ? { scale: [1, 1.4, 0.9, 1.15, 1] } : {}}
+          transition={{ duration: 0.4 }}
+        >
+          <CartDrawer />
+        </motion.div>
       </div>
-    </motion.header>);
-
+    </motion.header>
+  );
 };
