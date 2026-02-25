@@ -1,25 +1,27 @@
 import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
-import { ShoppingCart, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ShoppingCart, Loader2, Check } from "lucide-react";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
-import logoImg from "@/assets/nscustoms-logo.png";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { triggerFlyToCart } from "./FlyToCartAnimation";
+import { useNavigate } from "react-router-dom";
 
 export const ProductSection = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedImages, setSelectedImages] = useState<Record<number, number>>({});
+  const [addedVariants, setAddedVariants] = useState<Set<string>>(new Set());
   const addItem = useCartStore((s) => s.addItem);
   const isCartLoading = useCartStore((s) => s.isLoading);
-  const addBtnRef = useRef<HTMLButtonElement>(null);
+  const btnRefs = useRef<Record<number, HTMLButtonElement | null>>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchProducts(10).
-    then(setProducts).
-    catch(console.error).
-    finally(() => setLoading(false));
+    fetchProducts(10)
+      .then(setProducts)
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) {
@@ -28,8 +30,8 @@ export const ProductSection = () => {
         <div className="container mx-auto px-6 flex justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
-      </section>);
-
+      </section>
+    );
   }
 
   if (products.length === 0) {
@@ -38,134 +40,215 @@ export const ProductSection = () => {
         <div className="container mx-auto px-6 text-center">
           <p className="text-muted-foreground text-lg">Inga produkter hittades.</p>
         </div>
-      </section>);
-
+      </section>
+    );
   }
 
-  const product = products[0];
-  const images = product.node.images.edges;
-  const variant = product.node.variants.edges[0]?.node;
-  const price = variant?.price || product.node.priceRange.minVariantPrice;
-
-
-  const handleAddToCart = async (e: React.MouseEvent) => {
+  const handleAddToCart = async (product: ShopifyProduct, index: number) => {
+    const variant = product.node.variants.edges[0]?.node;
     if (!variant) return;
-    // Trigger fly animation from button position
-    const imgUrl = images[0]?.node.url;
-    if (imgUrl && addBtnRef.current) {
-      const rect = addBtnRef.current.getBoundingClientRect();
+
+    const imgUrl = product.node.images.edges[0]?.node.url;
+    const btn = btnRefs.current[index];
+    if (imgUrl && btn) {
+      const rect = btn.getBoundingClientRect();
       triggerFlyToCart(imgUrl, rect.left + rect.width / 2, rect.top);
     }
+
     await addItem({
       product,
       variantId: variant.id,
       variantTitle: variant.title,
       price: variant.price,
       quantity: 1,
-      selectedOptions: variant.selectedOptions || []
+      selectedOptions: variant.selectedOptions || [],
     });
+
+    setAddedVariants((prev) => new Set(prev).add(variant.id));
+    setTimeout(() => {
+      setAddedVariants((prev) => {
+        const next = new Set(prev);
+        next.delete(variant.id);
+        return next;
+      });
+    }, 2000);
+
     toast.success("Tillagd i varukorgen!", { position: "top-center" });
   };
 
   return (
-    <section id="product" className="py-24" aria-label="Produkter">
-      <div className="container mx-auto px-6">
+    <section id="product" className="py-20 md:py-32 relative" aria-label="Produkter">
+      {/* Background glow */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "var(--gradient-radial-glow)" }} />
+
+      <div className="container mx-auto px-6 relative">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="glass rounded-2xl p-5 md:p-12"
-          style={{ boxShadow: "var(--shadow-card)" }}>
-
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Images */}
-            <div className="space-y-4">
-              <div className="aspect-square rounded-xl overflow-hidden bg-secondary/20">
-                {images[selectedImage] &&
-                <img
-                  src={images[selectedImage].node.url}
-                  alt={images[selectedImage].node.altText || product.node.title}
-                  className="w-full h-full object-cover" />
-
-                }
-              </div>
-              {images.length > 1 &&
-              <div className="flex gap-3">
-                  {images.map((img, i) =>
-                <button
-                  key={i}
-                  onClick={() => setSelectedImage(i)}
-                  className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
-                  i === selectedImage ? "border-primary" : "border-transparent"}`
-                  }>
-
-                      <img src={img.node.url} alt="" className="w-full h-full object-cover" />
-                    </button>
-                )}
-                </div>
-              }
-            </div>
-
-            {/* Info */}
-            <div className="flex flex-col justify-center space-y-6">
-              <div>
-                
-                <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-3 break-words">
-                  {product.node.title}
-                </h2>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed break-words">
-                  {product.node.description || "Premium magnetisk registreringsskyltshållare. Enkel montering, ingen borrning krävs."}
-                </p>
-              </div>
-
-              <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-display font-bold gradient-text">
-                  {parseFloat(price.amount).toFixed(0)}
-                </span>
-                <span className="text-lg text-muted-foreground">{price.currencyCode}</span>
-                {variant?.compareAtPrice && parseFloat(variant.compareAtPrice.amount) > parseFloat(price.amount) &&
-                <span className="text-lg text-muted-foreground line-through opacity-60">
-                    {parseFloat(variant.compareAtPrice.amount).toFixed(0)} {variant.compareAtPrice.currencyCode}
-                  </span>
-                }
-              </div>
-
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Stark magnetisk fästning
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Ingen borrning krävs
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Passar alla standardskyltar
-                </li>
-              </ul>
-
-              <button
-                ref={addBtnRef}
-                onClick={handleAddToCart}
-                disabled={isCartLoading || !variant?.availableForSale}
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-display font-medium text-primary-foreground transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
-                style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}>
-
-                {isCartLoading ?
-                <Loader2 className="w-5 h-5 animate-spin" /> :
-
-                <>
-                    <ShoppingCart className="w-5 h-5" />
-                    Lägg i Varukorg
-                  </>
-                }
-              </button>
-            </div>
-          </div>
+          className="text-center mb-16"
+        >
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: "3rem" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="h-[2px] bg-primary mx-auto mb-6"
+          />
+          <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
+            Våra <span className="gradient-text">Produkter</span>
+          </h2>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Premium-tillbehör för din bil, designade med precision.
+          </p>
         </motion.div>
-      </div>
-    </section>);
 
+        <div className={`grid gap-8 ${products.length === 1 ? "max-w-2xl mx-auto" : "md:grid-cols-2 lg:grid-cols-3"}`}>
+          {products.map((product, index) => {
+            const images = product.node.images.edges;
+            const variant = product.node.variants.edges[0]?.node;
+            const price = variant?.price || product.node.priceRange.minVariantPrice;
+            const selectedImg = selectedImages[index] || 0;
+            const justAdded = variant && addedVariants.has(variant.id);
+
+            return (
+              <motion.div
+                key={product.node.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group glass rounded-2xl overflow-hidden transition-shadow duration-500"
+                style={{ boxShadow: "var(--shadow-card)" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = "var(--shadow-card-hover)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = "var(--shadow-card)";
+                }}
+              >
+                {/* Image area */}
+                <div
+                  className="relative aspect-square overflow-hidden cursor-pointer"
+                  onClick={() => navigate(`/product/${product.node.handle}`)}
+                >
+                  {images[selectedImg] && (
+                    <motion.img
+                      key={selectedImg}
+                      src={images[selectedImg].node.url}
+                      alt={images[selectedImg].node.altText || product.node.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  )}
+                  {/* Hover gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  {/* Thumbnail strip on hover */}
+                  {images.length > 1 && (
+                    <div className="absolute bottom-3 left-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {images.slice(0, 4).map((img, i) => (
+                        <button
+                          key={i}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedImages((prev) => ({ ...prev, [index]: i }));
+                          }}
+                          className={`w-10 h-10 rounded-md overflow-hidden border-2 transition-all ${
+                            i === selectedImg
+                              ? "border-primary scale-110"
+                              : "border-white/20 hover:border-white/50"
+                          }`}
+                        >
+                          <img src={img.node.url} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Price badge */}
+                  <div className="absolute top-4 right-4">
+                    <div className="px-3 py-1.5 rounded-full glass-strong font-display font-bold text-sm text-foreground">
+                      {parseFloat(price.amount).toFixed(0)} {price.currencyCode}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Info area */}
+                <div className="p-6">
+                  <h3
+                    className="font-display font-semibold text-lg text-foreground mb-1 cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => navigate(`/product/${product.node.handle}`)}
+                  >
+                    {product.node.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-5 leading-relaxed">
+                    {product.node.description || "Premium-tillbehör för din bil."}
+                  </p>
+
+                  {variant?.compareAtPrice &&
+                    parseFloat(variant.compareAtPrice.amount) > parseFloat(price.amount) && (
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-xs text-muted-foreground line-through">
+                          {parseFloat(variant.compareAtPrice.amount).toFixed(0)} {variant.compareAtPrice.currencyCode}
+                        </span>
+                        <span className="text-xs font-medium text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">
+                          Spara{" "}
+                          {(
+                            parseFloat(variant.compareAtPrice.amount) - parseFloat(price.amount)
+                          ).toFixed(0)}{" "}
+                          {price.currencyCode}
+                        </span>
+                      </div>
+                    )}
+
+                  <motion.button
+                    ref={(el) => { btnRefs.current[index] = el; }}
+                    onClick={() => handleAddToCart(product, index)}
+                    disabled={isCartLoading || !variant?.availableForSale}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-lg font-display font-medium text-primary-foreground transition-all duration-300 hover:brightness-110 disabled:opacity-50 disabled:hover:brightness-100"
+                    style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}
+                  >
+                    <AnimatePresence mode="wait">
+                      {isCartLoading ? (
+                        <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        </motion.div>
+                      ) : justAdded ? (
+                        <motion.div
+                          key="added"
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.5 }}
+                          className="flex items-center gap-2"
+                        >
+                          <Check className="w-5 h-5" />
+                          Tillagd!
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="default"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="flex items-center gap-2"
+                        >
+                          <ShoppingCart className="w-5 h-5" />
+                          Lägg i Varukorg
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
 };
