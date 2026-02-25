@@ -104,10 +104,7 @@ Vi hjälper dig gärna med frågor om beställningar, produkter eller annat.
 info@nackastrandcustoms.se
 
 **Svarstider:**
-- Vi svarar på e-post inom 1–2 arbetsdagar.
-
-**Adress:**
-Nacka Strand, Stockholm, Sverige`,
+- Vi svarar på e-post inom 1–2 arbetsdagar.`,
   },
 };
 
