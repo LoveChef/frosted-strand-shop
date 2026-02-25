@@ -129,7 +129,7 @@ export const ProductSection = () => {
                     <span className="text-lg text-muted-foreground line-through opacity-60">
                       {parseFloat(variant.compareAtPrice.amount).toFixed(0)} {variant.compareAtPrice.currencyCode}
                     </span>
-                    <span className="inline-flex items-center rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-bold text-white">
+                    <span className="inline-flex items-center rounded-md glass px-2.5 py-1 text-xs font-bold text-emerald-400 border border-emerald-400/20">
                       Spara {(parseFloat(variant.compareAtPrice.amount) - parseFloat(price.amount)).toFixed(0)} {price.currencyCode}
                     </span>
                   </>
