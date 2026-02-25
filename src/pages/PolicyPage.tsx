@@ -131,7 +131,7 @@ const PolicyPage = () => {
     <div className="min-h-screen bg-background">
       <SEOHead title={`${policy.title} – Nacka Strand Customs`} canonical={`/policy/${slug}`} />
       <Header />
-      <main className="container mx-auto px-6 py-16 max-w-3xl">
+      <main className="container mx-auto px-6 pt-24 pb-16 max-w-3xl">
         <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">
           <ArrowLeft className="h-4 w-4" />
           <span className="text-sm">Tillbaka</span>
