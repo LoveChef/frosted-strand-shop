@@ -28,9 +28,14 @@ export const Footer = () => {
               ))}
             </nav>
           </div>
-          <p className="text-xs text-muted-foreground text-center">
-            © {new Date().getFullYear()} Nacka Strand Customs. Alla rättigheter förbehållna.
-          </p>
+          <div className="text-center space-y-1">
+            <p className="text-xs text-muted-foreground">
+              © {new Date().getFullYear()} Nacka Strand Customs. Alla rättigheter förbehållna.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Powered By <span className="text-yellow-400" style={{ fontFamily: "'Orbitron', sans-serif" }}>PRY</span>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
