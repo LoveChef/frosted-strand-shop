@@ -77,7 +77,7 @@ const policies: Record<string, { title: string; content: string }> = {
     content: `Vi strävar efter att leverera din beställning så snabbt och säkert som möjligt.
 
 **Leveranstider:**
-- Standard leverans: 3–7 arbetsdagar inom Sverige.
+- Standard leverans: 1-3 arbetsdagar inom Sverige.
 - Leveranstider kan variera vid hög belastning eller helgdagar.
 
 **Fraktkostnad:**
