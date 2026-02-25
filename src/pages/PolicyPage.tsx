@@ -68,6 +68,8 @@ const policies: Record<string, { title: string; content: string }> = {
 **Ansvarsbegränsning:**
 - Vi ansvarar inte för indirekta skador som uppstår genom användning av våra produkter.
 - Vår maximala ersättning är begränsad till varans inköpspris.
+- Användning av våra produkter sker på användarens eget ansvar. Nacka Strand Customs tar inget ansvar för hur produkterna används, monteras eller installeras efter leverans.
+- Kunden ansvarar själv för att säkerställa att produkten är lämplig för avsett användningsområde.
 
 **Ändringar:**
 - Vi förbehåller oss rätten att uppdatera dessa villkor. Ändringarna gäller från publiceringsdatumet.`,
