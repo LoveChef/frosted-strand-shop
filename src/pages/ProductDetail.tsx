@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ShoppingCart, Loader2, ArrowLeft } from "lucide-react";
@@ -9,6 +9,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead, buildProductSchema } from "@/components/SEOHead";
 import { toast } from "sonner";
+import { triggerFlyToCart } from "@/components/FlyToCartAnimation";
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -63,8 +64,15 @@ const ProductDetail = () => {
     available: variant?.availableForSale ?? false,
   });
 
+  const addBtnRef = useRef<HTMLButtonElement>(null);
+
   const handleAddToCart = async () => {
     if (!variant) return;
+    const imgUrl = images[0]?.node.url;
+    if (imgUrl && addBtnRef.current) {
+      const rect = addBtnRef.current.getBoundingClientRect();
+      triggerFlyToCart(imgUrl, rect.left + rect.width / 2, rect.top);
+    }
     await addItem({
       product,
       variantId: variant.id,
@@ -157,6 +165,7 @@ const ProductDetail = () => {
                 </div>
 
                 <button
+                  ref={addBtnRef}
                   onClick={handleAddToCart}
                   disabled={isCartLoading || !variant?.availableForSale}
                   className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-display font-medium text-primary-foreground transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
