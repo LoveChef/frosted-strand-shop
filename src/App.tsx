@@ -7,6 +7,7 @@ import { useCartSync } from "@/hooks/useCartSync";
 import { FlyToCartAnimation } from "@/components/FlyToCartAnimation";
 import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
+import PolicyPage from "./pages/PolicyPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,6 +20,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/product/:handle" element={<ProductDetail />} />
+        <Route path="/policy/:slug" element={<PolicyPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
