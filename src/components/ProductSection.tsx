@@ -114,9 +114,16 @@ export const ProductSection = () => {
                 <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-3 break-words">
                   {product.node.title}
                 </h2>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed break-words">
-                  {product.node.description || "Premium magnetisk registreringsskyltshållare. Enkel montering, ingen borrning krävs."}
-                </p>
+                {product.node.descriptionHtml ? (
+                  <div
+                    className="text-sm md:text-base text-muted-foreground leading-relaxed break-words prose prose-invert prose-sm max-w-none [&_ul]:space-y-1 [&_ul]:mt-2 [&_li]:flex [&_li]:items-start [&_li]:gap-2 [&_strong]:text-foreground"
+                    dangerouslySetInnerHTML={{ __html: product.node.descriptionHtml }}
+                  />
+                ) : (
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed break-words">
+                    {product.node.description || "Premium magnetisk registreringsskyltshållare. Enkel montering, ingen borrning krävs."}
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center gap-3 flex-wrap">
@@ -135,21 +142,6 @@ export const ProductSection = () => {
                   </>
                 }
               </div>
-
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Stark magnetisk fästning
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Ingen borrning krävs
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Passar alla standardskyltar
-                </li>
-              </ul>
 
               <button
                 ref={addBtnRef}
