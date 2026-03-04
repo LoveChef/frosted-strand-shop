@@ -5,7 +5,7 @@ const features = [
   {
     icon: Magnet,
     title: "Superstarka magneter",
-    description: "Neodymium-magneter som håller skylten säkert på plats i alla väderförhållanden.",
+    description: "Högkvalitativa magneter som håller skylten säkert på plats i alla väderförhållanden.",
   },
   {
     icon: Shield,
