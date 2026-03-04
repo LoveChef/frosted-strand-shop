@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Loader2 } from "lucide-react";
+import { ShoppingCart, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
 import logoImg from "@/assets/nscustoms-logo.png";
 import { useCartStore } from "@/stores/cartStore";
@@ -85,14 +85,29 @@ export const ProductSection = () => {
           <div className="grid md:grid-cols-2 gap-12">
             {/* Images */}
             <div className="space-y-4">
-              <div className="aspect-square rounded-xl overflow-hidden bg-secondary/20">
+              <div className="aspect-square rounded-xl overflow-hidden bg-secondary/20 relative group">
                 {images[selectedImage] &&
                 <img
                   src={images[selectedImage].node.url}
                   alt={images[selectedImage].node.altText || product.node.title}
                   className="w-full h-full object-cover" />
-
                 }
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setSelectedImage((selectedImage - 1 + images.length) % images.length)}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background/90"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => setSelectedImage((selectedImage + 1) % images.length)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background/90"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </>
+                )}
               </div>
               {images.length > 1 &&
               <div className="flex gap-3">
