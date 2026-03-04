@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { HeroBanner } from "@/components/HeroBanner";
 import { ProductSection } from "@/components/ProductSection";
 import { FeaturesSection } from "@/components/FeaturesSection";
+import { InstallationGuide } from "@/components/InstallationGuide";
 import { Footer } from "@/components/Footer";
 import { SEOHead, organizationSchema, webSiteSchema } from "@/components/SEOHead";
 
@@ -18,6 +19,7 @@ const Index = () => {
       <main>
         <HeroBanner />
         <ProductSection />
+        <InstallationGuide />
         <FeaturesSection />
       </main>
       <Footer />
