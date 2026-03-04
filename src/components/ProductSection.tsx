@@ -11,6 +11,8 @@ export const ProductSection = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedOption, setSelectedOption] = useState<'both' | 'single'>('both');
   const addItem = useCartStore((s) => s.addItem);
   const isCartLoading = useCartStore((s) => s.isLoading);
   const addBtnRef = useRef<HTMLButtonElement>(null);
@@ -48,9 +50,10 @@ export const ProductSection = () => {
   const price = variant?.price || product.node.priceRange.minVariantPrice;
 
 
+  const actualQuantity = selectedOption === 'both' ? quantity * 2 : quantity;
+
   const handleAddToCart = async (e: React.MouseEvent) => {
     if (!variant) return;
-    // Trigger fly animation from button position
     const imgUrl = images[0]?.node.url;
     if (imgUrl && addBtnRef.current) {
       const rect = addBtnRef.current.getBoundingClientRect();
@@ -61,10 +64,11 @@ export const ProductSection = () => {
       variantId: variant.id,
       variantTitle: variant.title,
       price: variant.price,
-      quantity: 1,
+      quantity: actualQuantity,
       selectedOptions: variant.selectedOptions || []
     });
-    toast.success("Tillagd i varukorgen!", { position: "top-center" });
+    const label = selectedOption === 'both' ? `${actualQuantity}st (Fram & Bak)` : `${actualQuantity}st (Fram eller Bak)`;
+    toast.success(`${label} tillagd i varukorgen!`, { position: "top-center" });
   };
 
   return (
@@ -143,22 +147,70 @@ export const ProductSection = () => {
                 }
               </div>
 
-              <button
-                ref={addBtnRef}
-                onClick={handleAddToCart}
-                disabled={isCartLoading || !variant?.availableForSale}
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-display font-medium text-primary-foreground transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
-                style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}>
+              {/* Option selector */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setSelectedOption('both')}
+                  className={`flex-1 px-4 py-3 rounded-lg font-display font-medium text-sm border-2 transition-all duration-200 ${
+                    selectedOption === 'both'
+                      ? 'border-primary bg-primary/10 text-foreground'
+                      : 'border-border bg-secondary/20 text-muted-foreground hover:border-primary/50'
+                  }`}
+                >
+                  Fram & Bak
+                  <span className="block text-xs text-muted-foreground mt-0.5">2st per set</span>
+                </button>
+                <button
+                  onClick={() => setSelectedOption('single')}
+                  className={`flex-1 px-4 py-3 rounded-lg font-display font-medium text-sm border-2 transition-all duration-200 ${
+                    selectedOption === 'single'
+                      ? 'border-primary bg-primary/10 text-foreground'
+                      : 'border-border bg-secondary/20 text-muted-foreground hover:border-primary/50'
+                  }`}
+                >
+                  Fram eller Bak
+                  <span className="block text-xs text-muted-foreground mt-0.5">1st</span>
+                </button>
+              </div>
 
-                {isCartLoading ?
-                <Loader2 className="w-5 h-5 animate-spin" /> :
+              {/* Quantity + Add to cart */}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center border-2 border-border rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="px-3 py-3 text-foreground hover:bg-secondary/30 transition-colors"
+                    disabled={quantity <= 1}
+                  >
+                    <span className="text-lg font-bold">−</span>
+                  </button>
+                  <span className="px-4 py-3 text-foreground font-display font-bold min-w-[3rem] text-center">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="px-3 py-3 text-foreground hover:bg-secondary/30 transition-colors"
+                  >
+                    <span className="text-lg font-bold">+</span>
+                  </button>
+                </div>
 
-                <>
-                    <ShoppingCart className="w-5 h-5" />
-                    Lägg i Varukorg
-                  </>
-                }
-              </button>
+                <button
+                  ref={addBtnRef}
+                  onClick={handleAddToCart}
+                  disabled={isCartLoading || !variant?.availableForSale}
+                  className="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-display font-medium text-primary-foreground transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+                  style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}
+                >
+                  {isCartLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-5 h-5" />
+                      Lägg i Varukorg ({actualQuantity}st)
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </motion.div>
