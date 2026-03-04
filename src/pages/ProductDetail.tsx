@@ -18,6 +18,7 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const addItem = useCartStore((s) => s.addItem);
   const isCartLoading = useCartStore((s) => s.isLoading);
+  const addBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!handle) return;
@@ -64,7 +65,7 @@ const ProductDetail = () => {
     available: variant?.availableForSale ?? false,
   });
 
-  const addBtnRef = useRef<HTMLButtonElement>(null);
+
 
   const handleAddToCart = async () => {
     if (!variant) return;
@@ -147,9 +148,16 @@ const ProductDetail = () => {
                   <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">
                     {product.node.title}
                   </h1>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {product.node.description || "Premium magnetisk registreringsskyltshållare."}
-                  </p>
+                  {product.node.descriptionHtml ? (
+                    <div
+                      className="text-muted-foreground leading-relaxed prose prose-invert prose-sm max-w-none [&_strong]:text-foreground"
+                      dangerouslySetInnerHTML={{ __html: product.node.descriptionHtml }}
+                    />
+                  ) : (
+                    <p className="text-muted-foreground leading-relaxed">
+                      {product.node.description || "Premium magnetisk registreringsskyltshållare."}
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex items-baseline gap-3">
