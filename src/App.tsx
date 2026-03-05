@@ -7,6 +7,7 @@ import { useCartSync } from "@/hooks/useCartSync";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { FlyToCartAnimation } from "@/components/FlyToCartAnimation";
 import { CookieBanner } from "@/components/CookieBanner";
+import UnderConstruction from "./pages/UnderConstruction";
 import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
 import PolicyPage from "./pages/PolicyPage";
@@ -24,7 +25,7 @@ const AppContent = () => {
       <FlyToCartAnimation />
       <CookieBanner />
       <Routes>
-        <Route path="/" element={<Index />} />
+        <Route path="/" element={<UnderConstruction />} />
         <Route path="/product/:handle" element={<ProductDetail />} />
         <Route path="/policy/:slug" element={<PolicyPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
