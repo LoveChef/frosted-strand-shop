@@ -147,16 +147,19 @@ export const ProductSection = () => {
 
               <div className="flex items-center gap-3 flex-wrap">
                 <span className="text-4xl font-display font-bold gradient-text">
-                  {parseFloat(price.amount).toFixed(0)}
+                  {(parseFloat(price.amount) * (selectedOption === 'both' ? 2 : 1)).toFixed(0)}
                 </span>
                 <span className="text-lg text-muted-foreground">{price.currencyCode}</span>
+                {selectedOption === 'both' && (
+                  <span className="text-sm text-muted-foreground">({parseFloat(price.amount).toFixed(0)} {price.currencyCode}/st)</span>
+                )}
                 {variant?.compareAtPrice && parseFloat(variant.compareAtPrice.amount) > parseFloat(price.amount) &&
                 <>
                     <span className="text-lg text-muted-foreground line-through opacity-60">
-                      {parseFloat(variant.compareAtPrice.amount).toFixed(0)} {variant.compareAtPrice.currencyCode}
+                      {(parseFloat(variant.compareAtPrice.amount) * (selectedOption === 'both' ? 2 : 1)).toFixed(0)} {variant.compareAtPrice.currencyCode}
                     </span>
                     <span className="inline-flex items-center rounded-md glass px-2.5 py-1 text-xs font-bold text-emerald-400 border border-emerald-400/20">
-                      Spara {(parseFloat(variant.compareAtPrice.amount) - parseFloat(price.amount)).toFixed(0)} {price.currencyCode}
+                      Spara {((parseFloat(variant.compareAtPrice.amount) - parseFloat(price.amount)) * (selectedOption === 'both' ? 2 : 1)).toFixed(0)} {price.currencyCode}
                     </span>
                   </>
                 }
