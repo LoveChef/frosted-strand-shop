@@ -25,7 +25,7 @@ const AppContent = () => {
       <FlyToCartAnimation />
       <CookieBanner />
       <Routes>
-        <Route path="/" element={<UnderConstruction />} />
+        <Route path="/" element={<Index />} />
         <Route path="/product/:handle" element={<ProductDetail />} />
         <Route path="/policy/:slug" element={<PolicyPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
